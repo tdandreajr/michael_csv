@@ -6,16 +6,6 @@
 int main (){
     FILE *f;
     f = fopen("fight_songs.csv", "r");
-    FILE *f2;
-    f2 = fopen("fight_songs2.csv", "w");
-    FILE *f3;
-    f3 = fopen ("ACC_schools.csv", "w");
-    FILE *f4;
-    f4 = fopen ("song_name.csv", "w");
-    FILE *f5;
-    f5 = fopen("writers.csv", "w");
-    FILE *f6;
-    f6 = fopen("year.csv", "w");
     
     char *var;
     char varchar[301];
@@ -42,86 +32,141 @@ int main (){
     int g = 0;
     int y = 0;
     while (1){
-        //fscanf(f, "%s", var);
+        //Get a row into var from file f;
+        //QUESTION: Will this all work properly since the first line has headers? Shouldn't we do something
+        //to ignore the first line? Or at least handle it differently?
         fgets (var, 300, f);
         if (feof(f)){
             break;
         }
-        //fprintf(f2, "%s", var);
+        
+        // SCHOOL -----------------------------------------------------------------------------------------------------
+        //Variable i will be our index reference for both school and var array index.
+        //We want to look through var characters until we find a comma. That data should be copied character
+        //by character into the school array. Discontinue the while once we reach a comma.
         i = 0;
         while (*(var + i) != ','){
-            // printf("%c", *(var + i));
+            //This copies the value at the index i referenced by var to the value at the index i referenced by school.
             *(school + i) = *(var + i);
             i++;
         }
+        //A string is terminated with the null char, so we need to do this manually. Because we already incremented
+        //the i variable in the previous loop, we can just set the school index at i to null char, terminating the 
+        //string.
         *(school + i) = '\0';
+
+
+
+        // CONFERENCE -------------------------------------------------------------------------------------------------
+        //Variable j will be our index reference for conference, but i will continue to be our variable index for var.
+        //We want to do the same thing - look through var characters until we find a comma. Again, the data should be
+        //copied character by character into the conf array.
+
+        //We first must increment i to get past the comma. We initialize j to zero since we are at the beginning of
+        //the conf array.
         i++;
         j = 0;
+        //Continue to use the i variable to look through the var array after the previous comma. Discontinue the
+        //while once we reach a comma. 
         while (*(var + i) != ','){
+            //This copies the value at the index i referenced by var to the value at the index j referenced by conf.
             *(conf + j) = *(var + i);
+            //We have to now increment both i and j separately because they are different locations in different
+            //char strings.
             i++;
             j++;
         }
-        //*(school + i) = '\0';
+
+        //A string is terminated with the null char, so we need to do this manually. Because we already incremented
+        //the j variable in the previous loop, we can just set the conf index at j to null char, terminating the 
+        //string.
         *(conf + j) = '\0';
-        //printf("%s:", school);
-        // printf("%s\n", conf);
+
+        //Now that the string in conf is terminated and complete, we can perform string functions such as compare
+        //against the string using the libary functions. This would NOT work if we had not terminated the string
+        //with the "\0" as it would not be seen as a string, but still as just a character array.
         if (strcmp(conf, "ACC")== 0){
-            fprintf(f3, "%s", var);
+            printf("%s", var);
         }
         i++;
-        j++;
+
+        //I left this in here, however there is no reason to continue incrementing the j variable now. We are done
+        //manipulating the conference string, and j is related only to that string, so we don't need to do anything
+        //more with j. Leaving it alone allows us to know that the string conf is length j.
+        //j++;
+
+        // SONG -------------------------------------------------------------------------------------------------------
+        //Variable k will be our index reference for song, but i will continue to be our variable index for var.
+        //We want to do the same thing - look through var characters until we find a comma. Again, the data should be
+        //copied character by character into the song array.
         k = 0;
         while (*(var + i) != ','){
             *(song + k) = *(var + i);
             i++;
-            j++;
+            //j++; Don't do anything with j. It's not related to song in any way.
             k++;
-            // printf("\n");
         }
         
         *(song + k) = '\0';
         i++;
-        j++;
-        k++;
+        //j++; Don't do anything with j. It's not related to song in any way.
+        //k++; Don't do anything with k. Again, leaving it alone allows us to know that the string is length k.
+
+
+        // WRITERS ----------------------------------------------------------------------------------------------------
+        //Variable g will be our index reference for writers, but i will continue to be our variable index for var.
+        //We want to do the same thing - look through var characters until we find a comma. Again, the data should be
+        //copied character by character into the writers array.
         g = 0;
         while (*(var + i) != ','){
             *(writers + g) = *(var + i);
             i++;
-            j++;
-            k++;
+            //j++; Don't do anything with j. It's not related to writers in any way.
+            //k++; Don't do anything with k. It's not related to writers in any way.
             g++;
         }
+
         *(writers + g) = '\0';
         i++;
-        j++;
-        k++;
-        g++;
+        //j++; Don't do anything with j. It's not related to song in any way.
+        //k++; Don't do anything with k. It's not related to song in any way.
+        //g++; Don't do anything with g. Again, leaving it alone allows us to know that the string is length g.
+
+        // YEAR ----------------------------------------------------------------------------------------------------___
+        //Variable y will be our index reference for year, but i will continue to be our variable index for var.
+        //We want to do the same thing - look through var characters until we find a comma. Again, the data should be
+        //copied character by character into the yaer array.
         y = 0;
         while(*(var + i) != ','){
             *(year + y) = *(var + i);
             i++;
-            j++;
-            k++;
-            g++;
+            //j++; Don't do anything with j. It's not related to year in any way.
+            //k++; Don't do anything with k. It's not related to year in any way.
+            //g++; Don't do anything with g. It's not related to year in any way.
             y++;
             
         }
+
         *(year + y) = '\0';
+
+        //We are converting year to an integer. However, what happens if it's actually "Unknown"?
+        //We should handle that case. What does the function return when the year is "Unknown"? Is it NULL, is
+        //it zero? Experiment to learn what happens. Maybe rename your original file and only include a single
+        //line of data.
         int x = atoi(year);
+
+        //Right here at this point, we have the data in our school, conf, song, writers, and x variables.
+        //This would be a good time to go through and figure out how to determine the output for the lowest
+        //year would be.
+        //NOTE: If we haven't handled the first line of headers, and the "Unknown" values, comparisons
+        //probably won't work properly!
         printf("%s:", school);
         printf("%s: ", conf);
         printf("Song name is %s ", song);
         printf(" Written by %s ", writers);
         printf("Year of song is %d\n ", x);
-        fprintf(f6, "%s", var);
         
     }
         fclose(f);
-        fclose(f2);
-        fclose(f3);
-        fclose(f4);
-        fclose(f5);
-        fclose(f6);
     return 0;
 }
